@@ -11,7 +11,7 @@ from util.attachment import add_video
 
 
 @allure.tag('mobile')
-@allure.description('Test search form')
+@allure.title('Test search')
 def test_search():
     """
     Testing search form
