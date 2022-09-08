@@ -11,10 +11,11 @@ def get_url_video(session_id: str):
     """
     Get url video from browserstack
     """
+    API_BROWSERSTACK = os.getenv('API_BROWSERSTACK')
     session = requests.Session()
     session.auth = (os.getenv('LOGIN'), os.getenv('KEY'))
     response = session.get(
-        f'https://api-cloud.browserstack.com/app-automate/sessions/{session_id}.json')
+        f'{API_BROWSERSTACK}/sessions/{session_id}.json')
     return response.json().get('automation_session').get('video_url')
 
 

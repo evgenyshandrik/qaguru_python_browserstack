@@ -20,8 +20,9 @@ def create_driver(func) -> webdriver:
     """
     Create driver
     """
-    user = os.getenv('LOGIN')
-    key = os.getenv('KEY')
+    USER = os.getenv('LOGIN')
+    KEY = os.getenv('KEY')
+    APPIUM_BROWSERSTACK = os.getenv('APPIUM_BROWSERSTACK')
 
     desired_cap = {
         "app": "bs://c700ce60cf13ae8ed97705a55b8e022f13c5827c",
@@ -34,6 +35,6 @@ def create_driver(func) -> webdriver:
     }
 
     return webdriver.Remote(
-        command_executor=f"http://{user}:{key}@hub-cloud.browserstack.com/wd/hub",
+        command_executor=f"http://{USER}:{KEY}@{APPIUM_BROWSERSTACK}/wd/hub",
         desired_capabilities=desired_cap
     )
