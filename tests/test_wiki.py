@@ -2,61 +2,39 @@
 Test wiki app
 """
 import allure
-from appium.webdriver.common.mobileby import MobileBy
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-
-from tests.conftest import create_driver
-from util.attachment import add_video
+from allure_commons._allure import step
+from appium.webdriver.common.appiumby import AppiumBy
+from selene import have, be
+from selene.support.shared import browser
 
 
 @allure.tag('mobile')
-@allure.title('Test search')
-def test_search():
+@allure.title('Test skip start screens')
+def test_skip_screens():
     """
-    Testing search form
+    Test skip start screens
     """
-    driver = create_driver(test_search)
+    with step('First screen checking'):
+        print(browser.config.desired_capabilities)
+        browser.element((AppiumBy.ID, "org.wikipedia.alpha:id/primaryTextView")) \
+            .should(have.text("The Free Encyclopedia"))
+        browser.element((AppiumBy.ID, "org.wikipedia.alpha:id/fragment_onboarding_forward_button")).click()
 
-    search_element = WebDriverWait(driver, 30).until(
-        EC.element_to_be_clickable((MobileBy.ACCESSIBILITY_ID, "Search Wikipedia"))
-    )
-    search_element.click()
-    search_input = WebDriverWait(driver, 30).until(
-        EC.element_to_be_clickable((MobileBy.ID, "org.wikipedia.alpha:id/search_src_text"))
-    )
-    search_input.send_keys("BrowserStack")
-    search_results = driver.find_elements_by_class_name("android.widget.TextView")
+    with step('Second screen checking'):
+        browser.element((AppiumBy.ID, "org.wikipedia.alpha:id/primaryTextView")) \
+            .should(have.text("New ways to explore"))
+        browser.element((AppiumBy.ID, "org.wikipedia.alpha:id/fragment_onboarding_forward_button")).click()
 
-    assert len(search_results) > 0, 'List should be more 0'
+    with step('Third screen checking'):
+        browser.element((AppiumBy.ID, "org.wikipedia.alpha:id/primaryTextView")) \
+            .should(have.exact_text("Reading lists with sync"))
+        browser.element((AppiumBy.ID, "org.wikipedia.alpha:id/fragment_onboarding_forward_button")).click()
 
-    add_video(driver.session_id, 'Search Wikipedia')
+    with step('Fourth screen checking'):
+        browser.element((AppiumBy.ID, "org.wikipedia.alpha:id/primaryTextView")) \
+            .should(have.text("Send anonymous data"))
+        browser.element((AppiumBy.ID, "org.wikipedia.alpha:id/fragment_onboarding_done_button")).click()
+        browser.element((AppiumBy.ID, "org.wikipedia.alpha:id/search_container")) \
+            .should(be.visible)
 
-    driver.quit()
-
-
-@allure.tag('mobile')
-@allure.title('Test hide news')
-def test_hide_news():
-    """
-    Testing hide news
-    """
-    driver = create_driver(test_hide_news)
-
-    first_block_news = driver.find_elements_by_id("org.wikipedia.alpha:id/view_card_header_title")[0]
-    first_header_menu = driver.find_elements_by_id("org.wikipedia.alpha:id/view_list_card_header_menu")[0]
-    title_first_block = first_block_news.text
-
-    first_header_menu.click()
-    item_menu = WebDriverWait(driver, 30).until(
-        EC.element_to_be_clickable((MobileBy.ID, "org.wikipedia.alpha:id/title")))
-    item_menu.click()
-
-    new_first_block_news = driver.find_elements_by_id("org.wikipedia.alpha:id/view_card_header_title")[0]
-    title_new_first_block = new_first_block_news.text
-
-    assert title_first_block is not title_new_first_block, 'Titles should be different'
-
-    add_video(driver.session_id, 'Testing hide news')
-
-    driver.quit()
+    browser.quit()
