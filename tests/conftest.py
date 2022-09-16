@@ -25,7 +25,3 @@ def create_driver():
     )
 
     return browser
-
-# return webdriver.Remote(
-#     config.settings.remote_url, options=config.settings.driver_options
-# )
